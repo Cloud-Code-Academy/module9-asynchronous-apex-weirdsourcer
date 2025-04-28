@@ -31,6 +31,28 @@ public with sharing class NextStepFuture {
     //  The body of the method
     //}
 
+    private static final String FUTURE_NEXT_STEP = 'Meeting in the future';
+
+
+    @future
+    public static void updateAccAndOppNextStep() {
+        //Process Account
+        List<Account> accToProcess = [SELECT Id, Next_Step__c FROM Account WHERE Next_Step__c != :FUTURE_NEXT_STEP WITH SYSTEM_MODE];
+        for (Account acc : accToProcess) {
+            acc.Next_Step__c = FUTURE_NEXT_STEP;
+        }
+        
+        Database.Update(accToProcess, AccessLevel.SYSTEM_MODE);
+
+        //Process Opportunity
+        List<Opportunity> oppToProcess = [SELECT Id, NextStep FROM Opportunity WHERE NextStep != :FUTURE_NEXT_STEP WITH SYSTEM_MODE];
+        for (Opportunity opp : oppToProcess) {
+            opp.NextStep = FUTURE_NEXT_STEP;
+        }
+        
+        Database.Update(oppToProcess, AccessLevel.SYSTEM_MODE);
+    }
+
     /*
     * Question 2
     * Update/Uncomment the template code to create a method
@@ -42,8 +64,7 @@ public with sharing class NextStepFuture {
         Opportunity bigDeal = new Opportunity();
         insertBigDeal(bigDeal);
 
-        UserRole[] roles = [SELECT Id, Name FROM UserRole WHERE Id = :UserInfo.getUserRoleId() OR Name = 'CRO' LIMIT 1];
-        updateUserRoleName(roles);
+        updateUserRoleName();
     }
 
     // Helper method to insert big deal
@@ -58,7 +79,9 @@ public with sharing class NextStepFuture {
 
 
     // Helper method to update role name
-    private static void updateUserRoleName(UserRole[] roles){
+    @future
+    private static void updateUserRoleName() {
+        UserRole[] roles = [SELECT Id, Name FROM UserRole WHERE Id = :UserInfo.getUserRoleId() OR Name = 'CRO' LIMIT 1];
         UserRole role;
         if (roles.isEmpty()) {
             role = new UserRole();
