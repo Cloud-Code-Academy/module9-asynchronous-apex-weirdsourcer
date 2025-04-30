@@ -61,14 +61,15 @@ public with sharing class NextStepFuture {
     */
     //Mix DML Error happens when you try to perform DML operations on setup and non-setup objects in a single transaction.
     public static void createDealAndUpdateRole() {
-        Opportunity bigDeal = new Opportunity();
-        insertBigDeal(bigDeal);
+
+        insertBigDeal();
 
         updateUserRoleName();
     }
 
     // Helper method to insert big deal
-    private static void insertBigDeal(Opportunity opp) {
+    private static void insertBigDeal() {
+        Opportunity opp = new Opportunity();
         opp.Amount = 1000000;
         opp.Name = 'Big Deal';
         opp.StageName = 'Closed Won'; 

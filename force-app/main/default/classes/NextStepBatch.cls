@@ -40,7 +40,7 @@ public with sharing class NextStepBatch implements Database.Batchable<sObject>{
         // Update the account records in this batch scope
         Database.update(scope, false, AccessLevel.SYSTEM_MODE);
         // Query for all opportunities related to the accounts in this batch scope
-        List<Opportunity> oppsToUpdate = [SELECT Id, NextStep FROM Opportunity WITH SYSTEM_MODE];
+        List<Opportunity> oppsToUpdate = [SELECT Id, NextStep FROM Opportunity WHERE AccountId IN :scope WITH SYSTEM_MODE];
         // Loop through the opportunity records
 
             // Set the Next Step field to 'Batching the next meetings together.'
@@ -55,13 +55,19 @@ public with sharing class NextStepBatch implements Database.Batchable<sObject>{
     
     public void finish(Database.BatchableContext bc){
         final List<User> USERS = [SELECT Id, Name, Email FROM User WHERE IsActive = true AND (NOT Email LIKE 'autoproc%')]; // DO NOT CHANGE
-        set<string> emails = new set<String>();
+        Set<string> emails = new Set<String>();
         // Get the email addresses of all active users
 
             // Pass the set of active user emails to the sendEmailToActiveUsers method
         for(User u : USERS) {
-            emails.add(u.Email);
+            if(u.Email != null) {
+                emails.add(u.Email);
+            }
         }
+        if(!emails.isEmpty()) {
+            sendEmailToActiveUsers(emails);
+        }
+
     }
 
     // Helper method to send an email to all emails in the set

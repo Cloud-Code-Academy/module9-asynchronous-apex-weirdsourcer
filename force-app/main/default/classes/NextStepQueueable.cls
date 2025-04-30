@@ -56,7 +56,7 @@ public with sharing class NextStepQueueable implements Queueable {
     public void execute(QueueableContext qc) {
         // Get the accounts from the member variable
 
-            // Remove the Next Step using the helper method
+        // Remove the Next Step using the helper method
         removeNextStep(accounts);
 
         // Update the accounts
@@ -71,8 +71,8 @@ public with sharing class NextStepQueueable implements Queueable {
             WITH SYSTEM_MODE
             ];
 
-            // Remove the Next Step using the helper method
-            removeNextStep(oppsToProcess);
+        // Remove the Next Step using the helper method
+        removeNextStep(oppsToProcess);
 
 
         // Update the opportunities
