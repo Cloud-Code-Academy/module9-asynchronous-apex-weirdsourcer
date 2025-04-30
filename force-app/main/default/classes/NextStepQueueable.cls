@@ -25,7 +25,7 @@ public with sharing class NextStepQueueable implements Queueable {
     // Constructor to accept the accounts
     public NextStepQueueable(List<Account> accListInput) {
         // Store the accounts in a member variable
-        accounts = accListInput;
+        this.accounts = accListInput;
     }
 
 
